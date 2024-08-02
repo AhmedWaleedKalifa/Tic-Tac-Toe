@@ -42,12 +42,12 @@ function Player(name, symbol) {
     return { name, symbol }
 }
 
-function Game(playerOne, playerTwo) {
+function Game(playerOne=Player("Player1","x"), playerTwo=Player("Player2","o")) {
 
     const board = GameBoard();
     const player1 = Player(playerOne.name, playerOne.symbol);
     const player2 = Player(playerTwo.name, playerTwo.symbol);
-    let win=0;
+    let win = 0;
 
     activePlayer = player1;
 
@@ -59,7 +59,8 @@ function Game(playerOne, playerTwo) {
         }
     }
     const getActive = () => activePlayer;
-
+    const getWin = () => win;
+    const getBoard = () => board;
     const printRound = () => {
         board.printBoard();
         console.log("\n \n \n \n \n \n \n \n  \n")
@@ -82,47 +83,144 @@ function Game(playerOne, playerTwo) {
             if ((board.getBoard()[0][0] == activePlayer.symbol & board.getBoard()[0][0] == board.getBoard()[0][1] & board.getBoard()[0][1] == board.getBoard()[0][2]) || (board.getBoard()[1][0] == activePlayer.symbol & board.getBoard()[1][0] == board.getBoard()[1][1] & board.getBoard()[1][1] == board.getBoard()[1][2]) || (board.getBoard()[2][0] == activePlayer.symbol & board.getBoard()[2][0] == board.getBoard()[2][1] & board.getBoard()[2][1] == board.getBoard()[2][2]) || (board.getBoard()[0][0] == activePlayer.symbol & board.getBoard()[0][0] == board.getBoard()[1][0] & board.getBoard()[1][0] == board.getBoard()[2][0]) || (board.getBoard()[0][1] == activePlayer.symbol & board.getBoard()[0][1] == board.getBoard()[1][1] & board.getBoard()[1][1] == board.getBoard()[2][1]) || (board.getBoard()[0][2] == activePlayer.symbol & board.getBoard()[0][2] == board.getBoard()[1][2] & board.getBoard()[1][2] == board.getBoard()[2][2]) || (board.getBoard()[0][0] == activePlayer.symbol & board.getBoard()[0][0] == board.getBoard()[1][1] & board.getBoard()[1][1] == board.getBoard()[2][2]) || (board.getBoard()[0][2] == activePlayer.symbol & board.getBoard()[0][2] == board.getBoard()[1][1] & board.getBoard()[1][1] == board.getBoard()[2][0])) {
                 console.log("\n \n \n \n \n")
                 console.log("congratulations " + activePlayer.name)
-                win=1;
-                return;
+                win = activePlayer.name
             }
             switchPlayer();
             printRound();
         } else {
             printRound();
             console.log(activePlayer.name + " please play again form available places")
+
         }
 
     };
-    
-     
-    
-
-    printRound();
-    while (win==0) {
-        const row = prompt("Enter rows to play move");
-        const column = prompt("Enter columns to play move")
-        playRound(row, column);
-
-    }
 
     return {
         playRound,
         printRound,
-    
+        getActive,
+        getBoard,
+        getWin,
+        switchPlayer
+
     }
 
 
 
 }
-// const screenController = (function () {
 
 
+function screenController() {
 
-// })();
+    // const dialog = document.querySelector("dialog");
+    // const showButton = document.querySelector(".playGame");
+    // const cancelButton = document.querySelector(".cancel");
+    // showButton.addEventListener("click", () => {
+    //     dialog.showModal();
+    // });
+
+    // cancelButton.addEventListener("click", (e) => {
+    //     e.preventDefault();
+    //     dialog.close();
+    // });
+    // const player1Input = document.getElementById(".player1");
+    // const player2Input = document.getElementById(".player2");
+    // const numberOfGamesInput = document.getElementById(".numberOfGames");
+    let playerOne;
+    let playerTwo;
+    // showButton.addEventListener("click", () => {
+    //     const player1 = player1Input.value;
+    //     const player2 = player2Input.value;
+    //     const numberOfGames = numberOfGamesInput.value;
+    //     player1Input.value = "";
+    //     player2Input.value = "";
+    //     numberOfGamesInput.value = "";
+    //     playerOne=Player(player1,"x")
+    //     playerTwo=Player(player2,"o")
+    //     dialog.close();
+    // });
+   
 
 
+    let game = Game(playerOne, playerTwo);
+    const start = document.querySelector(".control button")
+    const playGame = document.querySelector(".control .playGame")
 
-const game = Game(Player("Ahmed", "x"), Player("Mohamed", "o"));
+    const body = document.querySelector("body")
+    const turn = document.querySelector(".turn");
+    let win = 0;
+
+    const container = document.querySelector(".container");
+    const cells = document.querySelectorAll(".container button");
+
+
+    const arr = Array.from(cells);
+    const updateBoard = () => {
+        const activePlayer = game.getActive();
+        turn.textContent = `${activePlayer.name} 's turn`
+    }
+    arr.forEach((e) => {
+        e.addEventListener("click", () => {
+            const row = e.getAttribute("id", "").slice(3, 4);
+            const column = e.getAttribute("id", "").slice(4, 5);
+            const temp = activePlayer;
+            if (win == 0) {
+                game.playRound(row, column, activePlayer.symbol)
+                if (temp == activePlayer) {
+
+                } else {
+                    game.switchPlayer();
+                    e.classList.add(activePlayer.symbol);
+                    game.switchPlayer();
+                }
+                updateBoard()
+
+                if (game.getWin()) {
+                    turn.textContent = ` Congratulations ${game.getWin()}`;
+                    turn.setAttribute("style", "color:green")
+                    game.switchPlayer();
+                    arr.forEach((e) => {
+                        if (e.classList == activePlayer.symbol) {
+                            if (activePlayer.symbol == "x") {
+                                e.classList.add("xx");
+                            } else {
+                                e.classList.add("ox");
+                            }
+                        }
+                    })
+                    win = 1
+                    start.setAttribute("style", "opacity:1;")
+                    start.addEventListener("click", () => {
+                        win = 0;
+                        arr.forEach((e) => {
+                            e.classList.remove("x");
+                            e.classList.remove("o");
+                            e.classList.remove("xx");
+                            e.classList.remove("ox");
+                            start.setAttribute("style", "opacity:.6;")
+                        })
+                        turn.style.color = "black";
+                        updateBoard()
+                        game = Game(playerTwo, playerOne);
+                        for (let i = 0; i < 3; i++) {
+                            for (let j = 0; j < 3; j++) {
+                                game.getBoard().getBoard()[i][j] = "0";
+                            }
+                        }
+                    })
+
+                }
+                
+            }
+        })
+    })
+
+    updateBoard()
+};
+
+screenController();
+
+
 
 
 

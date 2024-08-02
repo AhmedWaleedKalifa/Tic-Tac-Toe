@@ -1,13 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css">
-    <script src="js.js"></script>
+    <script src="js.js" defer></script>
 </head>
+
 <body>
-    
+    <h1>Tic Tac Toe Game!</h1>
+    <div class="control">
+        <div class="turn"></div>
+        <button></button>
+        <button class="playGame">Play Large Game</button>
+        <dialog>
+            <form action="#" method="dialog">
+                <div class="inputContainer">
+                    <label for="player1">Player1 name:</label>
+                    <input type="text" id="firstPlayer" maxlength="26" required>
+                </div>
+                <div class="inputContainer">
+                    <label for="player2">Player2 name:</label>
+                    <input type="text" id="player2" maxlength="25" required>
+                </div>
+                <div class="inputContainer">
+                    <label for="numberOfGames">Number games</label>
+                    <input type="text" id="numberOfGames" maxlength="25" required>
+                </div>
+               
+                <button class="create">start</button>
+                <input type="submit" value="cancel" class="cancel"></button>
+            </form>
+        </dialog>
+    </div>
+    <div class="container">
+        <button id="num00"></button>
+        <button id="num01"></button>
+        <button id="num02"></button>
+        <button id="num10"></button>
+        <button id="num11"></button>
+        <button id="num12"></button>
+        <button id="num20"></button>
+        <button id="num21"></button>
+        <button id="num22"></button>
+    </div>
 </body>
+
 </html>
